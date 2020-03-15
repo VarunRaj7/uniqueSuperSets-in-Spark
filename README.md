@@ -66,7 +66,7 @@ From the above code, it is evident that given a list of items as space separated
 
 **Note: However, it is also possible to get same hashCode() values for two different strings (common example of "FB" and "Ea") but it is less likely to happen in this case. This is can be considered as a minor issue in implementation, which will be resolved in this new version while keeping the core idea same.**
 
-So, in this version you can generate unique Id for each element using **ZipwithUniqueId()**.
+So, in this version unique Id is generated for each element using **ZipwithUniqueId()** on rdd.
 
 **Expected Result for uniqueSuperSets:**
 
