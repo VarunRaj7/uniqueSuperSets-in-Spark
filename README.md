@@ -31,9 +31,13 @@ NOTE: Though this example may violate the constraint 3, that the Item number 5 a
 | 1 4 5    |     #2     |     3       |
 | 2 5      |     #3     |     2       |
 | 2 3 5    |     #4     |     3       |
-| 4 5      |     #5     |     2       |
+| 4 5      |     #5     |     2       | 
 
-**How UniqueId is generated given space separated list of items**
+**How UniqueId is generated if not given?**
+
+You can create your own uniqueId and give it to algorithm to work or else set the given_uId flag to false to generate it by Spark. **When you generate your own uniqueId make sure it must be unique for each transaction.**
+
+In the earlier version, we used .hashCode() to generate uniqueId as shown below:
 
 .hashCode() function is used to generate UniqueId for a given list of items.
 
@@ -60,7 +64,9 @@ For example:
 
 From the above code, it is evident that given a list of items as space separated will generated uniqueId irrespective of distributed execution. 
 
-**Note: You may try to use any other way to generate uniqueId. When you use different approach to identify each row make sure it does not vary when executed multiple times on different machines. hashCode() returns same value for a given string on multiple machines. However, it is also possible to get same hashCode() values for two different strings (common example of "FB" and "Ea") but it is less likely to happen in this case. This is can be considered as a minor issue in implementation, which will be resolved in new version that will be out soon while keeping the core idea same.**
+**Note: However, it is also possible to get same hashCode() values for two different strings (common example of "FB" and "Ea") but it is less likely to happen in this case. This is can be considered as a minor issue in implementation, which will be resolved in this new version while keeping the core idea same.**
+
+So, in this version you can generate unique Id for each element using **ZipwithUniqueId()**.
 
 **Expected Result for uniqueSuperSets:**
 
@@ -194,7 +200,7 @@ ItemHash Class:
 Creating a ItemHash Class to hold the information of Items, UniqueId and Items Size.  
 
       Items: is      => Stored as immutable.TreeSet[Int]
-      UniqueId: hv  => Stored as Int
+      UniqueId: uId  => Stored as Int
       Items Size:iss => Stroed as Int
 
       This class has two more methods:
@@ -307,14 +313,14 @@ combOp function
  
  Scala Code can be found at:
  
- [Scala Code](https://github.com/VarunRaj7/uniqueSuperSets-in-Spark/blob/master/src/main/scala/com/VarunRaj7/uniqueSuperSets.scala)
+ [Scala Code](https://github.com/VarunRaj7/uniqueSuperSets-in-Spark/blob/master/src/main/scala/com/VarunRaj7/uniqueSuperSetsv4.scala)
  
  When using Jar command:
  
  
- spark-submit < job configurations > com.VarunRaj7.uniqueSuperSets uSS.jar < num of map partitions > < num of final result partitions > < Input file path > < Output file path >
+ spark-submit < job configurations > com.VarunRaj7.uniqueSuperSets uSSv4.jar < num of map partitions > < num of final result partitions > < num of shuffle partitions > < true/false to acknowledge if uId is provided > < Input file path > < Output file path >
  
- Sample Input file:
+ Sample Input file if uId is not given:
  
  1 2 3 5
  
@@ -325,7 +331,21 @@ combOp function
  2 3 5
  
  4 5
+
+ Sample Input file if uId is given:
  
+ 11,1 2 3 5
+ 
+ 12,1 4 5 
+ 
+ 13,2 5
+ 
+ 14,2 3 5
+ 
+ 15,4 5
+
+The 11, 12, 13, 14 and 15 are the uId's here.
+
  Sample Output file:
  
  1 2 3 5
