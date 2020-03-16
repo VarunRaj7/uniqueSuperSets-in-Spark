@@ -23,7 +23,6 @@ The main theme of algorithm is to find the unique supersets by item wise, which 
 
 **Algorithm with Example-1:**
 
-NOTE: Though this example may violate the constraint 3, that the Item number 5 appears in every transaction.  
 
 |  Items   |  UniqueId  |  ItemsSize  |
 |----------|------------|-------------|
@@ -31,7 +30,7 @@ NOTE: Though this example may violate the constraint 3, that the Item number 5 a
 | 1 4 5    |     #2     |     3       |
 | 2 5      |     #3     |     2       |
 | 2 3 5    |     #4     |     3       |
-| 4 5      |     #5     |     2       | 
+| 3 4      |     #5     |     2       | 
 
 **How UniqueId is generated if not given?**
 
@@ -110,18 +109,20 @@ Collecting all the suffixes with Item "3" as prefix:
 |----------|------------|-------------|
 |  5       |     #1     |     4       |
 |  5       |     #4     |     3       |
-
+|  4       |     #5     |     2       |
 
 Using the ItemsSize information it is equally likely two possible situations arise, that is, the #4 is not a subset of #1 and #4 is a subset of #1. However, it will make a locally optimal decision that it returns #1 by assuming #4 is subset of #1. If #4 is not subset of #1 it will be dealt by the items in before positions.
 
-3 => [#1]
+But in case of #1 and #5, both are different as #4 has only "3 4" and #1 has "_ _ 3 5" (using ItemsSize Information and ordering constraints). Therefore, there is no "4" in #1 and #1 is not a super set of #4. 
+
+3 => [#1, #4]
 
 Collecting all the suffixes with Item "4" as prefix:
 
 |  Items   |  UniqueId  |  ItemsSize  |
 |----------|------------|-------------|
 |  5       |     #2     |     3       |
-|  5       |     #5     |     2       |
+|  ()      |     #5     |     2       |
 
 From, the above it is clear that the #5 is subset of #2 because:
 
@@ -135,15 +136,14 @@ Collecting all the suffixes with Item "5" as prefix:
 |  ()      |     #2     |     3       |
 |  ()      |     #3     |     2       |
 |  ()      |     #4     |     3       |
-|  ()      |     #5     |     2       |
 
-From, the above it is clear that the Item "5" is the last item in all the transactions. We are not sure of which is subset of which but locally with the given information of ItemsSize we can say that #1 is more likely to be a SuperSet.
+From, the above it is clear that the Item "5" is the last item in all the collected suffixes. We are not sure of which is subset of which but locally with the given information of ItemsSize we can say that #1 is more likely to be a SuperSet.
 
 5 => [#1]
 
-Now collect all the uniqueIds returned by each keys. That is [#1, #2]
+Now collect all the uniqueIds returned by each keys. That is [#1, #2, #5]
 
-Hence, the uniqueSuperSets are the transactions with uniqueId are [#1, #2]
+Hence, the uniqueSuperSets are the transactions with uniqueId are [#1, #2, #5]
 
 Algorithm with Example-2:
 
